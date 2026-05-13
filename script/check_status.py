@@ -8,6 +8,8 @@ import requests
 DEFAULT_BASE_URL = "https://tools-httpstatus.pickup-services.com"
 REQUESTS_COUNT = 5
 
+DEFAULT_STATUS_CODES = [100, 200, 302, 404, 500]
+
 STATUS_CODES = [
     100, 101, 102, 103,
     200, 201, 202, 203, 204, 205, 206, 207, 208, 226,
@@ -36,11 +38,9 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--codes",
-        nargs="+",
-        type=int,
-        choices=STATUS_CODES,
-        help="HTTP status codes to request",
+        "--random",
+        action="store_true",
+        help="Send 5 random requests",
     )
 
     return parser.parse_args()
@@ -90,10 +90,10 @@ def make_request(base_url: str, expected_status: int) -> None:
 def main() -> None:
     args = parse_args()
 
-    if args.codes:
-        status_codes = args.codes
-    else:
+    if args.random:
         status_codes = random.choices(STATUS_CODES, k=REQUESTS_COUNT)
+    else:
+        status_codes = DEFAULT_STATUS_CODES
 
     logging.info("Selected status codes: %s", status_codes)
 
