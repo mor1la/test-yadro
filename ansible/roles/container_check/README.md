@@ -5,9 +5,7 @@ Ansible-роль для проверки Docker-контейнера.
 ## Requirements
 
 - Ubuntu
-- Docker
 - root privileges
-- Git
 
 ## Dependencies
 
