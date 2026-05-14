@@ -1,0 +1,71 @@
+---
+- name: Install git
+  ansible.builtin.apt:
+    name: git
+    state: present
+    #update_cache: true
+  become: true
+
+- name: Remove old app project directory
+  ansible.builtin.file:
+    path: "{{ app_remote_project_path }}"
+    state: absent
+  become: true
+
+- name: Clone app repository
+  ansible.builtin.git:
+    repo: "{{ app_repo_url }}"
+    dest: "{{ app_remote_project_path }}"
+    version: "{{ app_repo_version }}"
+    force: true
+  become: true
+
+- name: Build Docker image
+  community.docker.docker_image:
+    name: "{{ app_image_name }}"
+    tag: "{{ app_image_tag }}"
+    source: build
+    build:
+      path: "{{ app_remote_project_path }}"
+      dockerfile: "{{ app_dockerfile_path }}"
+  become: true
+
+- name: Remove old container
+  community.docker.docker_container:
+    name: "{{ app_container_name }}"
+    state: absent
+  become: true
+
+- name: Run container and wait for finish
+  community.docker.docker_container:
+    name: "{{ app_container_name }}"
+    image: "{{ app_image_name }}:{{ app_image_tag }}"
+    state: started
+    detach: false
+  register: container_run
+  become: true
+
+- name: Check container exit code
+  ansible.builtin.assert:
+    that:
+      - container_run.container.State.ExitCode == 0
+    fail_msg: "Container finished with non-zero exit code"
+    success_msg: "Container finished successfully"
+
+- name: Get docker logs
+  ansible.builtin.command:
+    cmd: docker logs {{ app_container_name }}
+  register: container_logs
+  changed_when: false
+  become: true
+
+- name: Show docker logs
+  ansible.builtin.debug:
+    var: container_logs.stdout_lines
+
+- name: Check docker logs are not empty
+  ansible.builtin.assert:
+    that:
+      - (container_logs.stdout | length > 0) or (container_logs.stderr | length > 0)
+    fail_msg: "Docker logs are empty"
+    success_msg: "Docker logs are available"

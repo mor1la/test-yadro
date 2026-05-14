@@ -1,0 +1,7 @@
+---
+- name: Install Docker and run app container
+  hosts: docker_hosts
+
+  roles:
+    - docker_install
+    - container_check

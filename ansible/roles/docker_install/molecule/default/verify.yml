@@ -1,0 +1,43 @@
+---
+- name: Verify Docker role
+  hosts: vm
+  become: true
+
+  tasks:
+    - name: Check Docker service is running
+      ansible.builtin.service_facts:
+
+    - name: Assert Docker service is running
+      ansible.builtin.assert:
+        that:
+          - "'docker.service' in ansible_facts.services"
+          - ansible_facts.services["docker.service"].state == "running"
+        fail_msg: "Docker service is not running"
+        success_msg: "Docker service is running"
+
+    - name: Get Docker host info
+      community.docker.docker_host_info:
+      register: docker_info
+
+    - name: Assert Docker is available
+      ansible.builtin.assert:
+        that:
+          - docker_info.host_info.ServerVersion is defined
+        fail_msg: "Docker daemon is not available"
+        success_msg: "Docker daemon is available"
+
+    - name: Run test container
+      community.docker.docker_container:
+        name: molecule-docker-test
+        image: hello-world
+        state: started
+        detach: false
+        cleanup: true
+      register: test_container
+
+    - name: Assert test container finished successfully
+      ansible.builtin.assert:
+        that:
+          - test_container is succeeded
+        fail_msg: "Test container failed"
+        success_msg: "Test container finished successfully"

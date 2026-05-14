@@ -1,0 +1,9 @@
+---
+galaxy_info:
+  namespace: marina
+  role_name: container_check
+  author: marina
+  description: Build and run Docker container for script check
+  min_ansible_version: "2.17"
+
+dependencies: []

@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: vm
+  become: true
+
+  roles:
+    - role: docker_install

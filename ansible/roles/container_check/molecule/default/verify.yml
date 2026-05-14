@@ -1,0 +1,44 @@
+---
+- name: Verify container_check role
+  hosts: vm
+  become: true
+
+  vars_files:
+    - ../../defaults/main.yml
+
+  tasks:
+    - name: Get container info
+      community.docker.docker_container_info:
+        name: "{{ app_container_name }}"
+      register: app_container_info
+
+    - name: Assert container exists
+      ansible.builtin.assert:
+        that:
+          - app_container_info.exists
+        fail_msg: "App container was not found"
+        success_msg: "App container exists"
+
+    - name: Assert container finished successfully
+      ansible.builtin.assert:
+        that:
+          - app_container_info.container.State.ExitCode == 0
+        fail_msg: "App container finished with non-zero exit code"
+        success_msg: "App container finished successfully"
+
+    - name: Get docker logs
+      ansible.builtin.command:
+        cmd: docker logs {{ app_container_name }}
+      register: app_container_logs
+      changed_when: false
+
+    - name: Show docker logs
+      ansible.builtin.debug:
+        var: app_container_logs.stdout_lines
+
+    - name: Assert docker logs are not empty
+      ansible.builtin.assert:
+        that:
+          - (app_container_logs.stdout | length > 0) or (app_container_logs.stderr | length > 0)
+        fail_msg: "Docker logs are empty"
+        success_msg: "Docker logs are available"

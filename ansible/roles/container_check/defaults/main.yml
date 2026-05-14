@@ -1,0 +1,10 @@
+---
+app_image_name: httpstatus
+app_image_tag: latest
+app_container_name: httpstatus-check
+
+app_repo_url: "https://github.com/mor1la/test-yadro"
+app_repo_version: main
+
+app_remote_project_path: /tmp/httpstatus-app
+app_dockerfile_path: docker/Dockerfile  
