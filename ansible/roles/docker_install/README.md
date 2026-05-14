@@ -4,10 +4,10 @@ Ansible-роль для установки и настройки Docker на Ubu
 
 ## Requirements
 
-- /Ubuntu
+- Debian/Ubuntu
 - systemd
-- root privileges
 - Python 3
+- root privileges
 
 ## Dependencies
 
