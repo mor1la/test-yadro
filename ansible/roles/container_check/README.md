@@ -2,13 +2,6 @@
 
 Ansible-роль для проверки Docker-контейнера.
 
-Роль:
-- клонирует репозиторий приложения
-- собирает Docker image
-- запускает контейнер
-- проверяет exit code
-- проверяет docker logs
-
 ## Requirements
 
 - Ubuntu
