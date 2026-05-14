@@ -1,0 +1,8 @@
+---
+- name: Converge container_check
+  hosts: vm
+  become: false
+
+  roles:
+    - role: docker_install
+    - role: container_check

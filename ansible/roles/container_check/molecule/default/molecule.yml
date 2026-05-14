@@ -1,0 +1,35 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+
+driver:
+  name: delegated
+
+platforms:
+  - name: test-vm
+    groups:
+      - docker_hosts
+
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: ../../../../inventory/inventory.ini
+  playbooks:
+    converge: converge.yml
+
+verifier:
+  name: ansible
+
+scenario:
+  test_sequence:
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
+    - verify
+    - cleanup
+    - destroy
