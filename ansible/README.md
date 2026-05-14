@@ -11,8 +11,8 @@
 
 | Роль | Описание | Ссылка |
 |---|---|---|
-| `docker_install` | Установка и настройка Docker | [README.md](ansible/roles/docker_install/README.md) |
-| `container_check` | Сборка и проверка Docker-контейнера | [README.md](ansible/roles/container_check/README.md) |
+| `docker_install` | Установка и настройка Docker | [README](./roles/docker_install/README.md)  |
+| `container_check` | Сборка и проверка Docker-контейнера | [README](./roles/container_check/README.md) |
 
 ---
 
@@ -57,7 +57,6 @@ ansible-galaxy collection install -r requirements.yml
 ansible-playbook playbooks/main.yml --limit local
 ```
 
----
 
 ## Запуск playbook на ВМ
 
@@ -65,7 +64,6 @@ ansible-playbook playbooks/main.yml --limit local
 ansible-playbook playbooks/main.yml --limit vm --ask-pass
 ```
 
----
 
 ## Molecule
 
